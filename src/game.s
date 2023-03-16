@@ -10,7 +10,7 @@
   @ Definitions are in definitions.s to keep this file "clean"
   .include "./src/definitions.s"
 
-  .equ    BLINK_PERIOD, 500
+  .equ    BLINK_PERIOD, 250
 
   .section .text
 
@@ -38,7 +38,7 @@ Main:
   ORR     R5, #(0b01<<(LD3_PIN*2))    @ write 01 to bits 
   STR     R5, [R4]                    @ Write 
 
-  @ Initialise the first countdown to 1000 (1000ms)
+  @ Initialise the first countdown
 
   LDR     R4, =blink_countdown
   LDR     R5, =BLINK_PERIOD
