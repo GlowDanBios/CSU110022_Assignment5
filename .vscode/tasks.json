@@ -1,0 +1,121 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build ARM Assembly Language program",
+            "group": "build",
+            "type": "shell",
+            "command": "make",
+            "windows": {                
+                "command": "xpacks/.bin/make",
+            },
+            "args": [
+                "-f",
+                "Makefile"
+            ],
+            "problemMatcher": [
+                {
+                    "owner": "arm",
+                    "fileLocation": [
+                        "relative",
+                        "${workspaceFolder}"
+                    ],
+                    "pattern": {
+                        "regexp": "^(.*):(\\d+):\\s+(Warning|Error):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "severity": 3,
+                        "message": 4
+                    }
+                }
+            ],
+            "presentation": {
+                "echo": true,
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            }
+        }, 
+        {
+            "label": "Install xPack dependencies",
+            "type": "shell",
+            "command": "xpm",
+            "args": [
+                "install"
+            ],
+            "presentation": {
+                "echo": true,
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "reveal": "always",
+                "clear": true
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "problemMatcher": []
+        }, 
+        {
+            "label": "Diagnose install xPack dependencies",
+            "type": "shell",
+            "command": "xpm",
+            "args": [
+                "install",
+                "--debug"
+            ],
+            "presentation": {
+                "echo": true,
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "reveal": "always",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Uninstall xPack dependencies",
+            "type": "shell",
+            "command": "xpm",
+            "args": [
+                "uninstall",
+                "--global",
+                "@xpack-dev-tools/arm-none-eabi-gcc",
+                "@xpack-dev-tools/qemu-arm",
+                "@xpack-dev-tools/windows-build-tools"
+            ],
+            "presentation": {
+                "echo": true,
+                "focus": true,
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "reveal": "always",
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "windowsKillOpenOcd",
+            "type": "shell",
+            "command": "taskkill",
+            "args": [
+                "/f",
+                "/im",
+                "openocd.exe"
+            ],
+            "options": {
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                        "/c"
+                    ]
+                }
+            },
+            "problemMatcher": []
+        }
+    ]
+}
