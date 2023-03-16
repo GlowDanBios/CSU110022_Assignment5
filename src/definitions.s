@@ -19,6 +19,14 @@
   .equ    SYSTICK_LOAD, (SYSTICK_BASE + 0x04)
   .equ    SYSTICK_VAL, (SYSTICK_BASE + 0x08)
 
+  .equ    NVIC_ISER, 0xE000E100
+
+  .equ    EXTI_BASE, 0x40010400
+  .equ    EXTI_IMR, (EXTI_BASE + 0x00)
+  .equ    EXTI_RTSR, (EXTI_BASE + 0x08)
+  .equ    EXTI_FTSR, (EXTI_BASE + 0x0C)
+  .equ    EXTI_PR, (EXTI_BASE + 0x14)
+
   .equ    LD3_PIN, 9
   .equ    LD4_PIN, 8
   .equ    LD5_PIN, 10
@@ -27,4 +35,8 @@
   .equ    LD8_PIN, 14
   .equ    LD9_PIN, 12
   .equ    LD10_PIN, 13
+  
+  .equ    SCB_BASE, 0xE000ED00
+  .equ    SCB_ICSR, (SCB_BASE + 0x04)
+  .equ    SCB_ICSR_PENDSTCLR, (1<<25)
   
