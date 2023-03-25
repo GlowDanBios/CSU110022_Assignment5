@@ -82,6 +82,15 @@ Main:
   MOV   R5, #0                        @
   STR   R5, [R4]                      @
 
+  @ Configure USER pushbutton (GPIO Port A Pin 0 on STM32F3 Discovery
+  @   kit) to use the EXTI0 external interrupt signal
+  @ Determined by bits 3..0 of the External Interrrupt Control
+  @   Register (EXTIICR)
+  LDR     R4, =SYSCFG_EXTIICR1
+  LDR     R5, [R4]
+  BIC     R5, R5, #0b1111
+  STR     R5, [R4]
+
   @ Enable (unmask) interrupts on external interrupt Line0
   LDR     R4, =EXTI_IMR
   LDR     R5, [R4]
