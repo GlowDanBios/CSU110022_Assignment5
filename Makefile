@@ -104,7 +104,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 #######################################
 # link script
 LDSCRIPT = ./support/STM32F303VCTx_FLASH.ld
-LDFLAGS = $(MCU) -nostdlib -nodefaultlibs -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--whole-archive
+LDFLAGS = $(MCU) -nostdlib -nodefaultlibs -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--no-warn-rwx-segment,--whole-archive
 
 # default build elf only
 default: $(BUILD_DIR)/$(TARGET).elf
