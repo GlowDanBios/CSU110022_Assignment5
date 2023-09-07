@@ -1,3 +1,4 @@
 {
-
+    "cortex-debug.armToolchainPath": "${config:tcd-csu1102x-helper.armToolchainPath}",
+    "cortex-debug.gdbPath": "${config:tcd-csu1102x-helper.gdbPath}"
 }

@@ -11,12 +11,8 @@
             "interface": "swd",
             "device": "STM32F303xC",
             "configFiles": ["support/custom.cfg"],
-            "serverpath": "xpacks/.bin/openocd",
+            "serverpath": "${config:tcd-csu1102x-helper.qemuPath}",
             "svdFile": "./support/STM32F303.svd",
-            "windows":{
-                "serverpath": "xpacks\\.bin\\openocd.cmd",
-                "postDebugTask": "windowsKillOpenOcd"
-            },
             "postStartSessionCommands": ["tbreak Main", "continue"],
             "showDevDebugOutput": "both",
             "overrideLaunchCommands": [

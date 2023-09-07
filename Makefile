@@ -19,14 +19,21 @@ OPT = -Og
 
 BASE_DIR = $(PWD)
 
-# Local xPack path
-XPACK_DIR = $(BASE_DIR)/xpacks
-
-# Toolchain path
-GCC_PATH = $(XPACK_DIR)/.bin
-
-# Build path
+# Build path (quoted for compatibility with Windows)
 BUILD_DIR = build
+
+# Toolchain path (https://stackoverflow.com/a/12099167)
+# Best guess defaults in case ARM_GNU_TOOLCHAIN_PATH is not specified
+ifeq ($(OS),Windows_NT)
+	ARM_GNU_TOOLCHAIN_PATH ?= C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/current
+else
+	UNAME_S := $(shell uname -s)
+	ifeq ($(UNAME_S),Darwin)
+		ARM_GNU_TOOLCHAIN_PATH ?= /opt/homebrew/bin
+	else
+		ARM_GNU_TOOLCHAIN_PATH ?= /usr/bin
+	endif
+endif
 
 
 ######################################
@@ -44,10 +51,10 @@ ASM_SOURCES = \
 #######################################
 PREFIX = arm-none-eabi-
 
-CC = "$(GCC_PATH)/$(PREFIX)gcc"
-AS = "$(GCC_PATH)/$(PREFIX)gcc" -x assembler-with-cpp
-CP = "$(GCC_PATH)/$(PREFIX)objcopy"
-SZ = "$(GCC_PATH)/$(PREFIX)size"
+CC = "$(ARM_GNU_TOOLCHAIN_PATH)/$(PREFIX)gcc"
+AS = "$(ARM_GNU_TOOLCHAIN_PATH)/$(PREFIX)gcc" -x assembler-with-cpp
+CP = "$(ARM_GNU_TOOLCHAIN_PATH)/$(PREFIX)objcopy"
+SZ = "$(ARM_GNU_TOOLCHAIN_PATH)/$(PREFIX)size"
 
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
@@ -97,11 +104,7 @@ CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"
 #######################################
 # link script
 LDSCRIPT = ./support/STM32F303VCTx_FLASH.ld
-
-# libraries
-LIBS = -lc -lm -lnosys 
-LIBDIR = 
-LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
+LDFLAGS = $(MCU) -nostdlib -nodefaultlibs -nostartfiles -T$(LDSCRIPT) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--whole-archive
 
 # default build elf only
 default: $(BUILD_DIR)/$(TARGET).elf
@@ -137,7 +140,7 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
 	
 $(BUILD_DIR):
-	mkdir $@
+	mkdir "$@"
 
 
 
@@ -145,7 +148,7 @@ $(BUILD_DIR):
 # clean up
 #######################################
 clean:
-	-rm -fR $(BUILD_DIR)
+	-rm -fR "$(BUILD_DIR)""
 
 
 #######################################

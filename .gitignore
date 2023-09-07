@@ -1,9 +1,6 @@
 # ignore build directory
 **/build
 
-# ignore xpacks directory
-**/xpacks
-
 # ignore .vscode
 .vscode/**
 

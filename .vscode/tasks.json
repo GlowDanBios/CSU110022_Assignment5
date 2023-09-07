@@ -8,13 +8,15 @@
             "group": "build",
             "type": "shell",
             "command": "make",
-            "windows": {                
-                "command": "xpacks/.bin/make",
-            },
             "args": [
                 "-f",
                 "Makefile"
             ],
+            "options": {
+                "env": {
+                    "ARM_GNU_TOOLCHAIN_PATH": "${config:tcd-csu1102x-helper.armToolchainPath}"
+                }
+            },
             "problemMatcher": [
                 {
                     "owner": "arm",
@@ -29,6 +31,18 @@
                         "severity": 3,
                         "message": 4
                     }
+                },
+                {
+                    "owner": "arm",
+                    "fileLocation": [
+                        "absolute"
+                    ],
+                    "pattern": {
+                        "regexp": "^(?!make)(.*):(\\d+):\\s+(.*)$",
+                        "file": 1,
+                        "line": 2,
+                        "message": 3
+                    }
                 }
             ],
             "presentation": {
@@ -38,84 +52,6 @@
                 "showReuseMessage": false,
                 "clear": true
             }
-        }, 
-        {
-            "label": "Install xPack dependencies",
-            "type": "shell",
-            "command": "xpm",
-            "args": [
-                "install"
-            ],
-            "presentation": {
-                "echo": true,
-                "focus": true,
-                "panel": "dedicated",
-                "showReuseMessage": false,
-                "reveal": "always",
-                "clear": true
-            },
-            "runOptions": {
-                "runOn": "folderOpen"
-            },
-            "problemMatcher": []
-        }, 
-        {
-            "label": "Diagnose install xPack dependencies",
-            "type": "shell",
-            "command": "xpm",
-            "args": [
-                "install",
-                "--debug"
-            ],
-            "presentation": {
-                "echo": true,
-                "focus": true,
-                "panel": "dedicated",
-                "showReuseMessage": false,
-                "reveal": "always",
-                "clear": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "Uninstall xPack dependencies",
-            "type": "shell",
-            "command": "xpm",
-            "args": [
-                "uninstall",
-                "--global",
-                "@xpack-dev-tools/arm-none-eabi-gcc",
-                "@xpack-dev-tools/qemu-arm",
-                "@xpack-dev-tools/windows-build-tools"
-            ],
-            "presentation": {
-                "echo": true,
-                "focus": true,
-                "panel": "dedicated",
-                "showReuseMessage": false,
-                "reveal": "always",
-                "clear": true
-            },
-            "problemMatcher": []
-        },
-        {
-            "label": "windowsKillOpenOcd",
-            "type": "shell",
-            "command": "taskkill",
-            "args": [
-                "/f",
-                "/im",
-                "openocd.exe"
-            ],
-            "options": {
-                "shell": {
-                    "executable": "cmd.exe",
-                    "args": [
-                        "/c"
-                    ]
-                }
-            },
-            "problemMatcher": []
         }
     ]
 }
