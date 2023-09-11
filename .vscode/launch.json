@@ -11,7 +11,7 @@
             "interface": "swd",
             "device": "STM32F303xC",
             "configFiles": ["support/custom.cfg"],
-            "serverpath": "${config:tcd-csu1102x-helper.qemuPath}",
+            "serverpath": "${config:tcd-csu1102x-helper.openocdPath}",
             "svdFile": "./support/STM32F303.svd",
             "postStartSessionCommands": ["tbreak Main", "continue"],
             "showDevDebugOutput": "both",
