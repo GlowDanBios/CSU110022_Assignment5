@@ -8,3 +8,6 @@
 !.vscode/launch.json
 !.vscode/tasks.json
 !.vscode/settings.json
+
+# macOS users ... you're welcome!
+.DS_Store
