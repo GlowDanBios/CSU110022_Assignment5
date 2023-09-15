@@ -41,9 +41,10 @@ endif
 ######################################
 
 # ASM sources
-ASM_SOURCES = \
+ASM_SOURCES = $(sort \
 	./support/startup.s \
-	$(wildcard ./src/*.s)
+	$(wildcard ./src/*.s) \
+)
 
 
 #######################################
