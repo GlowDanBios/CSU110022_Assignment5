@@ -1,7 +1,0 @@
-{
-    "tcd-csu1102x-helper": {
-        "armToolchainPath": "/usr/bin",
-        "gdbPath": "/usr/bin/gdb-multiarch",
-        "qemuPath": "/usr/bin/qemu-system-arm"
-    }
-}
