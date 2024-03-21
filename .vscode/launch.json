@@ -18,6 +18,9 @@
             "overrideLaunchCommands": [
                 "interpreter-exec console \"monitor reset halt\"",
             ],
+            "windows":{
+                "postDebugTask": "windowsKillOpenOcd"
+            }
         }
     ]
 }

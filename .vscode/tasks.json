@@ -52,6 +52,25 @@
                 "showReuseMessage": false,
                 "clear": true
             }
+        },
+        {
+            "label": "windowsKillOpenOcd",
+            "type": "shell",
+            "command": "taskkill",
+            "args": [
+                "/f",
+                "/im",
+                "openocd.exe"
+            ],
+            "options": {
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                        "/c"
+                    ]
+                }
+            },
+            "problemMatcher": []
         }
     ]
 }
