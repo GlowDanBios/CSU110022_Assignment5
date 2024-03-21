@@ -19,6 +19,7 @@
                 "interpreter-exec console \"monitor reset halt\"",
             ],
             "windows":{
+                "preLaunchTask": "windowsKillOpenOcd",
                 "postDebugTask": "windowsKillOpenOcd"
             }
         }
