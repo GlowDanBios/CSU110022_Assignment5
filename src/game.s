@@ -21,6 +21,9 @@
 Main:
   PUSH  {R4-R5,LR}
 
+  LDR   R4, =game_stage
+  LDR   R5, =0
+  STR   R5, [R4]
 
   @
   @ Prepare GPIO Port E Pin 9 for output (LED LD3)
@@ -33,7 +36,7 @@ Main:
   ORR     R5, R5, #(0b1 << (RCC_AHBENR_GPIOEEN_BIT))
   STR     R5, [R4]
 
-  @ Configure LD3 for output
+  @ Configure all LEDs for output
   @   by setting bits 27:26 of GPIOE_MODER to 01 (GPIO Port E Mode Register)
   @   (by BIClearing then ORRing)
   LDR     R4, =GPIOE_MODER
@@ -41,6 +44,34 @@ Main:
   BIC     R5, #(0b11<<(LD3_PIN*2))    @ Modify ...
   ORR     R5, #(0b01<<(LD3_PIN*2))    @ write 01 to bits 
   STR     R5, [R4]                    @ Write 
+  LDR     R5, [R4]                    @ Read ...
+  BIC     R5, #(0b11<<(LD4_PIN*2))    @ Modify ...
+  ORR     R5, #(0b01<<(LD4_PIN*2))    @ write 01 to bits 
+  STR     R5, [R4]                    @ Write 
+  LDR     R5, [R4]                    @ Read ...
+  BIC     R5, #(0b11<<(LD5_PIN*2))    @ Modify ...
+  ORR     R5, #(0b01<<(LD5_PIN*2))    @ write 01 to bits 
+  STR     R5, [R4]                    @ Write 
+  LDR     R5, [R4]                    @ Read ...
+  BIC     R5, #(0b11<<(LD6_PIN*2))    @ Modify ...
+  ORR     R5, #(0b01<<(LD6_PIN*2))    @ write 01 to bits 
+  STR     R5, [R4]                    @ Write
+  LDR     R5, [R4]                    @ Read ...
+  BIC     R5, #(0b11<<(LD7_PIN*2))    @ Modify ...
+  ORR     R5, #(0b01<<(LD7_PIN*2))    @ write 01 to bits 
+  STR     R5, [R4]                    @ Write
+  LDR     R5, [R4]                    @ Read ...
+  BIC     R5, #(0b11<<(LD8_PIN*2))    @ Modify ...
+  ORR     R5, #(0b01<<(LD8_PIN*2))    @ write 01 to bits 
+  STR     R5, [R4]                    @ Write
+  LDR     R5, [R4]                    @ Read ...
+  BIC     R5, #(0b11<<(LD9_PIN*2))    @ Modify ...
+  ORR     R5, #(0b01<<(LD9_PIN*2))    @ write 01 to bits 
+  STR     R5, [R4]                    @ Write
+  LDR     R5, [R4]                    @ Read ...
+  BIC     R5, #(0b11<<(LD10_PIN*2))    @ Modify ...
+  ORR     R5, #(0b01<<(LD10_PIN*2))    @ write 01 to bits 
+  STR     R5, [R4]                    @ Write     
 
   @ Initialise the first countdown
 
@@ -69,7 +100,8 @@ Main:
   LDR     R4, =SYSTICK_CSR            @   Start SysTick timer by setting CSR to 0x7
   LDR     R5, =0x7                    @     set CLKSOURCE (bit 2) to system clock (1)
   STR     R5, [R4]                    @     set TICKINT (bit 1) to 1 to enable interrupts
-                                      @     set ENABLE (bit 0) to 1
+                                        @     set ENABLE (bit 0) to 1
+
 
 
   @
@@ -77,10 +109,6 @@ Main:
   @ We'll count the number of times the button is pressed
   @
 
-  @ Initialise count to zero
-  LDR   R4, =button_count             @ count = 0;
-  MOV   R5, #0                        @
-  STR   R5, [R4]                      @
 
   @ Configure USER pushbutton (GPIO Port A Pin 0 on STM32F3 Discovery
   @   kit) to use the EXTI0 external interrupt signal
@@ -111,6 +139,7 @@ Main:
   @ Nothing else to do in Main
   @ Idle loop forever (welcome to interrupts!!)
 Idle_Loop:
+   
   B     Idle_Loop
   
 End_Main:
@@ -124,7 +153,13 @@ End_Main:
   .type  SysTick_Handler, %function
 SysTick_Handler:
 
-  PUSH  {R4, R5, LR}
+  PUSH  {R4-R8, LR}
+
+  LDR   R4, =random_value           @ Load random value
+  LDR   R5, [R4]                    @ 
+  ADD   R5, R5, #1                  @ random++
+  STR   R5, [R4]                    @ Store random value
+
 
   LDR   R4, =blink_countdown        @ if (countdown != 0) {
   LDR   R5, [R4]                    @
@@ -137,15 +172,35 @@ SysTick_Handler:
   B     .LendIfDelay                @ }
 
 .LelseFire:                         @ else {
-
-  LDR     R4, =GPIOE_ODR            @   Invert LD3
+  LDR     R4, =game_stage           @     Load game_stage 
+  LDR     R4, [R4]                  @
+  CMP     R4, #0                    @     if(game_stage!=0){
+  BEQ     .LendIfDelay              @
+  LDR     R4, =GPIOE_ODR            @         Invert LD3
   LDR     R5, [R4]                  @
-  EOR     R5, #(0b1<<(LD3_PIN))     @   GPIOE_ODR = GPIOE_ODR ^ (1<<LD3_PIN);
+  LDR     R8, =target               @         Load target value
+  LDR     R8, [R8]                  @ 
+  ADD     R8, R8, #8                @         target = target+8
+  MOV     R9, #1                    @
+  MOV     R9, R9, LSL R8            @
+  EOR     R5, R9                    @       GPIOE_ODR = GPIOE_ODR ^ (1<<target);
   STR     R5, [R4]                  @ 
 
-  LDR     R4, =blink_countdown      @   countdown = BLINK_PERIOD;
+  LDR     R4, =blink_countdown      @       countdown = BLINK_PERIOD;
   LDR     R5, =BLINK_PERIOD         @
   STR     R5, [R4]                  @
+  LDR     R6, =demo_blink_count     @       load blink_count
+  LDR     R7, [R6]                  @
+  ADD     R7, R7, #1                @       blink_count++
+  STR     R7, [R6]                  @
+  CMP     R7, #10                   @       if(blink_count>10){
+  BLO     .LendIfDelay              @
+  LDR     R4, =2                    @
+  LDR     R5, =game_stage           @           game_stage = 2
+  STR     R4, [R5]                  @
+  LDR     R4, =SYSTICK_CSR          @           Stop SysTick timer
+  LDR     R5, =0                    @       }
+  STR     R5, [R4]                  @     }
 
 .LendIfDelay:                       @ }
 
@@ -154,7 +209,7 @@ SysTick_Handler:
   STR     R5, [R4]                  @
 
   @ Return from interrupt handler
-  POP  {R4, R5, PC}
+  POP  {R4-R8, PC}
 
 
 
@@ -165,27 +220,48 @@ SysTick_Handler:
   .type  EXTI0_IRQHandler, %function
 EXTI0_IRQHandler:
 
-  PUSH  {R4,R5,LR}
+  PUSH  {R4-R6,LR}
 
-  LDR   R4, =button_count           @ count = count + 1
-  LDR   R5, [R4]                    @
-  ADD   R5, R5, #1                  @
-  STR   R5, [R4]                    @
+  LDR   R5, =game_stage           @  
+  LDR   R4, [R5]                  @
+  CMP   R4, #0                    @ if(game_stage == 0){
+  BEQ   .Lstart_game              @
+  B     .Lreturn                  @
 
-  LDR   R4, =EXTI_PR                @ Clear (acknowledge) the interrupt
-  MOV   R5, #(1<<0)                 @
-  STR   R5, [R4]                    @
+.Lstart_game:
+  LDR   R6, =random_value         @   Load random value
+  LDR   R6, [R6]                  @   
+  AND   R4, R6, #0b111            @
+
+  LDR   R6, =target               @    target = random value & 0b111
+  STR   R4, [R6]                  @
+  LDR   R6, =1                    @    game_stage = 1
+  STR   R6, [R5]                  @ }
+
+  B     .Lreturn
 
   @ Return from interrupt handler
-  POP  {R4,R5,PC}
+.Lreturn:
+  POP  {R4-R6,PC}
+
 
 
   .section .data
   
-button_count:
-  .space  4
+game_stage:
+  .space 4
+
+demo_blink_count:
+  .space 4
+
+target:
+  .space 4  
 
 blink_countdown:
   .space  4
+
+random_value:
+  .space 4
+
 
   .end
